@@ -7,17 +7,19 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.OperatorConstants;
 
 import java.io.File;
-import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+
+import static edu.wpi.first.units.Units.Meter;
 import edu.wpi.first.wpilibj.Filesystem;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
-import swervelib.math.SwerveMath;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
@@ -38,27 +40,17 @@ public class SwerveSubsystem extends SubsystemBase {
     // just put this code in a try/catch since java complains that there *might* be an error
     try
     {
-      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED);
-      // Alternative method if you don't want to supply the conversion factor via JSON files.
-      // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
+      // swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED);
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED,
+                                                                  new Pose2d(new Translation2d(Meter.of(1),
+                                                                                               Meter.of(4)),
+                                                                             Rotation2d.fromDegrees(0)));
     } catch (Exception e)
     {
       throw new RuntimeException(e);
     }
   }
 
-
-  // main command for driving the robot, takes in the x,y and rotation values from the controller and then scales them and passes them to the swerve drive object, also defines if it is field centric or not
-  public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX){
-    return run( () -> {
-      swerveDrive.drive(SwerveMath.scaleTranslation(new Translation2d(
-            translationX.getAsDouble() * swerveDrive.getMaximumVelocity(),
-            translationY.getAsDouble() * swerveDrive.getMaximumVelocity()), OperatorConstants.TRANSLATION_SCALE),
-        Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumAngularVelocity(),
-        OperatorConstants.FIELD_CENTRIC,
-        false);
-    });
-  } 
 
   // command for zeroing the gyro, it needs disabling and re-enabling to start moving again after calling, might want to look into that
   public Command zeroGyro() {
@@ -69,6 +61,22 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public Pose2d getPose(){
     return swerveDrive.getPose();
+  }
+
+  public SwerveDrive getSwerveDrive() {
+    return swerveDrive;
+  }
+
+  // Methods for actually moving the motors, gets the velocity from the swerve input streams
+  public void driveFieldOriented(ChassisSpeeds velcocity) {
+    swerveDrive.driveFieldOriented(velcocity);
+  }
+
+  // A command that just runs the function above
+  public Command driveFieldOriented(Supplier<ChassisSpeeds> Velocity){
+    return run(()-> {
+      swerveDrive.driveFieldOriented(Velocity.get());
+    });
   }
 
   

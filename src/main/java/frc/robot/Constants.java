@@ -17,9 +17,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
 
     // Joystick Deadbands
-    public static final double  LEFT_X_DEADBAND    = 0.05;
-    public static final double  LEFT_Y_DEADBAND    = 0.05;
-    public static final double  RIGHT_X_DEADBAND   = 0.05;
+    public static final double  DEADBAND           = 0.05;
 
     // Scales for movement and rotation (1 is full speed)
     public static final double  TRANSLATION_SCALE  = 0.5;
@@ -30,7 +28,7 @@ public final class Constants {
   }
 
 
-  // max speed of the robot in m/s
+  // max speed of the robot in m/s use Units.feetToMeters to use feet
   public static final   double  MAX_SPEED = 4.5;
 
   
