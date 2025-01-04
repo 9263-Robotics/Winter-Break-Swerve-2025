@@ -50,14 +50,13 @@ public class RobotContainer {
                                                                                              driverController::getRightY)
                                                                                              .headingWhile(true);
   
+
+  // create a new command that calls the driveCommand that we made in the swerveSubsystem
   Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
 
+  // Same thing but for direct angle rather than angular velocity
   Command driveFieldOrientedDirectAngle     = drivebase.driveFieldOriented(driveDirectAngle);
-  // create a new command that calls the driveCommand that we made in the swerveSubsystem, take in the joystick sticks with dead band and scale the rotation
-  // Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
-  //     () -> MathUtil.applyDeadband(driverController.getLeftY() * -1, OperatorConstants.LEFT_Y_DEADBAND),
-  //     () -> MathUtil.applyDeadband(driverController.getLeftX() * -1, OperatorConstants.LEFT_X_DEADBAND),
-  //     () -> driverController.getRightX() * -OperatorConstants.ROTATION_SCALE);
+  
 
   // define what buttons do on the controller
   private void configureBindings() {
