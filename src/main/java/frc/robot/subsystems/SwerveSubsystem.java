@@ -22,6 +22,7 @@ import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import swervelib.motors.SparkMaxSwerve;
 
 public class SwerveSubsystem extends SubsystemBase {
 
